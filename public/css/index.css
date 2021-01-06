@@ -4,49 +4,81 @@
 html, body {font-family: 'Sunflower', sans-serif; line-height: 1;}
 .wrapper {max-width: 1200px; margin: auto;}
 
-.popper {display: flex; align-items: center; padding-right: 4px;  position: absolute; opacity: 0.6; background-color: #2e8b3d; color: #f9f9f9; border-radius: 4px; text-align: center; font-weight: lighter; font-size: 0.875em; top: -50px; left: -50px;}
-.popper.lt {left: 0;}
-.popper.ct {left: -40px;}
-.popper.rt {left: -80px;}
-.popper.lt > .fa {left: 6px;}
-.popper.ct > .fa {left: calc(50% - 5px);}
-.popper.rt > .fa {right: 6px;}
-.popper .img-wrap {width: 40px;}
-.popper .name {margin-bottom: 2px;}
-.popper .fa {color: #2e8b3d; position: absolute; bottom: -10px; left: 50%; }
 
 /******** 전체 *********/
 .all-wrapper {width: 100%; height: 100vh; position: relative; background-repeat: no-repeat; background-position: center; background-size: cover; padding: 3%; color: #f9f9f9;}
+
 
 /******** 타이틀 *********/
 .title-wrapper {display: flex; justify-content: center; align-items: center; margin-bottom: 2em;}
 .title-wrapper .version {text-align: right; transform: translate(15px, 2px);}
 .title-wrapper .img-wrap {transform: translate(10px, -5px);}
 
+
 /******** 날씨 *********/
 .cont-wrapper {display: flex; justify-content: space-between;}
-.cont-wrapper > .map-wrap {flex: 400px 0 0; height: 600px; border: 1px solid red;}
-.cont-wrapper > .weather-wrap {flex: 100% 0 1; margin-left: 5%; border: 1px solid red;}
+.cont-wrapper > .map-wrap {flex: 400px 0 0; height: 600px; border-radius: 8px;}
+.cont-wrapper>.city-wrap {display: none;}
+.cont-wrapper > .weather-wrap {flex: 100% 0 1; margin-left: 5%;}
+.cont-wrapper .popper {display: flex; align-items: center; padding-right: 3px; position: absolute; background-color: rgba(9, 57, 88, 0.9); color: #f9f9f9; border-radius: 4px; text-align: center; font-weight: lighter; font-size: 0.75em; top: -48px;}
+.cont-wrapper .popper.lt {left: 0;}
+.cont-wrapper .popper.ct {left: -30px;}
+.cont-wrapper .popper.rt {left: -60px;}
+.cont-wrapper .popper.lt>.fa {left: 6px;}
+.cont-wrapper .popper.ct>.fa {left: calc(50% - 5px);}
+.cont-wrapper .popper.rt>.fa {right: 6px;}
+.cont-wrapper .popper .img-wrap {width: 35px;}
+.cont-wrapper .popper .name {margin-bottom: 2px;}
+.cont-wrapper .popper .fa {color: rgba(9, 57, 88, 0.9); position: absolute; bottom: -10px; font-size: 1.5em;}
+.cont-wrapper .city-wrap {width: 100%; position: relative; padding: 0 3%;}
+.cont-wrapper .city-wrap .swiper-container {width: 100%;}
+.cont-wrapper .city-wrap .bt-arrow {font-size: 2em;	position: absolute; top: 50%; transform: translateY(-50%); z-index: 9; cursor: pointer; outline: none;}
+.cont-wrapper .city-wrap .bt-prev {left: -5px;}
+.cont-wrapper .city-wrap .bt-next {right: -5px;}
+.cont-wrapper .city {border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 8px; overflow: hidden;}
+.cont-wrapper .city>.name {text-align: center; padding: 8px; font-size: 1.25em; background-color: rgba(0, 0, 0, 0.7);}
+.cont-wrapper .city>.content {display: flex; align-items: center; line-height: 1.2; padding: 4px 12px 0 4px; background-color: rgba(0, 0, 0, 0.4);}
 
 
-@media screen and (max-width: 1199px) {
-	
-}
+@media screen and (max-width: 1199px) {}
 
 @media screen and (max-width: 991px) {
-	.all-wrapper {padding: 5% 3%;}
-	.cont-wrapper > .map-wrap {display: none;}
-	.cont-wrapper > .weather-wrap {margin-left: 0;}
+	.all-wrapper {
+		padding: 5% 3%;
+	}
+
+	.cont-wrapper {
+		flex-wrap: wrap;
+	}
+
+	.cont-wrapper>.map-wrap {
+		display: none;
+	}
+
+	.cont-wrapper>.city-wrap {
+		flex: 100% 0 0;
+		display: block;
+	}
+
+	.cont-wrapper>.weather-wrap {
+		margin-left: 0;
+		flex: 100% 0 0;
+	}
 }
 
-@media screen and (max-width: 767px) {
-
-}
+@media screen and (max-width: 767px) {}
 
 @media screen and (max-width: 575px) {
-	.all-wrapper {padding: 8% 3%;}
-	.title-wrapper .title {font-size: 2em;}
-	.title-wrapper .img-wrap {width: 80px; transform: translate(8px, -3px);}
+	.all-wrapper {
+		padding: 8% 3%;
+	}
+
+	.title-wrapper .title {
+		font-size: 2em;
+	}
+
+	.title-wrapper .img-wrap {
+		width: 80px;
+		transform: translate(8px, -3px);
+	}
 }
-
-

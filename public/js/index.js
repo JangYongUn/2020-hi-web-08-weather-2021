@@ -31,11 +31,13 @@ $("#bt").click(function(){
 
 /********* 전역설정 **********/
 var map;
+var citiesk;
+var cityCnt = 0;	// onCreateMarker에서 갯수를 센다.
 var weatherUrl = 'https://api.openweathermap.org/data/2.5/weather';
 var params = {
 	appid: '02efdd64bdc14b279bc91d9247db4722',
 	units: 'metric',
-	exclude: 'minutely,hourly'
+	lang: 'kr'
 }
 
 
@@ -43,11 +45,16 @@ var params = {
 
 navigator.geolocation.getCurrentPosition(onGetPosition, onGetPositionError);
 
+$(window).resize(onResize);
+
 mapInit();
 
 
 
 /********* 이벤트콜백 **********/
+function onResize() {
+    map.setCenter(new kakao.maps.LatLng(35.8, 127.7));
+}
 
 function onGetPosition(r) {
     getWeather(r.coords.latitude, r.coords.longitude);
@@ -69,38 +76,80 @@ function onGetWeather(r) {
 }
 
 function onGetCity(r) {
-    createMarker(r.cities)
+    //createMarker(r.cities);
+	// 변경할 사항은 위의 createMarker를 실행하지 않고, openweathermap 통신으로 날씨정보를 받아오는게 완료되면 그때 그 정보로 marker를 만든다.
+	cities = r.cities;
+	for(var i in cities) {
+		params.lat = '';
+		params.lon = '';
+		params.id = cities[i].id;
+		$.get(weatherUrl, params, onCreateMarker);
+	}
+}
+
+function onCreateMarker(r) {
+	/* for(var i in cities) {
+		if(cities[i].id === r.id) {
+			r.cityName = cities[i].name;
+			break;
+		}
+	} */
+	cityCnt++;
+	var city = cities.filter(function(v){
+		return v.id === r.id;
+	});
+	var content = '';
+	content += '<div class="popper '+city[0].class+'">';
+	content += '<div class="img-wrap">';
+	content += '<img src="http://openweathermap.org/img/wn/'+r.weather[0].icon+'.png" class="mw-100">';
+	content += '</div>';
+	content += '<div class="cont-wrap">';
+	content += '<div class="name">'+city[0].name+'</div>';
+	content += '<div class="temp">'+r.main.temp+'도</div>';
+	content += '</div>';
+	content += '<i class="fa fa-caret-down"></i>';
+	content += '</div>';
+	var position = new kakao.maps.LatLng(r.coord.lat, r.coord.lon); 
+	var customOverlay = new kakao.maps.CustomOverlay({
+		position: position,
+		content: content
+	});
+	customOverlay.setMap(map);
+
+	content  = '<div class="city swiper-slide">';
+	content += '<div class="name">'+city[0].name+'</div>';
+	content += '<div class="content">';
+	content += '<div class="img-wrap">';
+	content += '<img src="http://openweathermap.org/img/wn/'+r.weather[0].icon+'.png" class="mw-100">';
+	content += '</div>';
+	content += '<div class="cont-wrap">';
+	content += '<div class="temp">온도&nbsp;&nbsp; '+r.main.temp+'도</div>';
+	content += '<div class="temp">체감&nbsp;&nbsp; '+r.main.feels_like+'도</div>';
+	content += '</div></div></div>';
+	$('.city-wrap .swiper-wrapper').append(content);
+	if(cityCnt == cities.length) {
+		var swiper = new Swiper('.city-wrap .swiper-container', {
+			slidesPerView: 2,
+			spaceBetween: 10,
+			loop: true,
+			navigation: {
+        nextEl: '.city-wrap .bt-next',
+        prevEl: '.city-wrap .bt-prev',
+      },
+			breakpoints: {
+				576: { slidesPerView: 3 },
+				768: { slidesPerView: 4 },
+			}
+		});
+	}
 }
 
 
 
 /********* 사용자함수 **********/
-function createMarker(v) {
-	for(var i in v) {
-        var content = '';
-        content += '<div class="popper '+v[i].class+'">';
-		content += '<div class="img-wrap">';
-		content += '<img src="http://openweathermap.org/img/wn/10d.png" alt="">';
-		content += '</div>';
-		content += '<div class="cont-wrap">';
-		content += '<div class="name">'+v[i].name+'</div>';
-		content += '<div class="temp">-3.57도</div>';
-		content += '</div>';
-		content += '<i class="fa fa-caret-down"></i>';
-		content += '</div>';
-		var position = new kakao.maps.LatLng(v[i].lat, v[i].lon); 
-		var customOverlay = new kakao.maps.CustomOverlay({
-			position: position,
-            content: content,
-            xAnchor: 0.3,
-			yAnchor: 0.3
-		});
-		customOverlay.setMap(map);
-	}
-}
-
 
 function getWeather(lat, lon) {
+	params.id = '';
 	params.lat = lat;
 	params.lon = lon;
 	$.get(weatherUrl, params, onGetWeather);
@@ -109,12 +158,15 @@ function getWeather(lat, lon) {
 function mapInit() {
 	var mapOption = { 
 		center: new kakao.maps.LatLng(35.8, 127.7),
-		level: 13
+		level: 13,
+		draggable: false,
+		zoomable: false
 	};
 	map = new kakao.maps.Map($('#map')[0], mapOption);
-	map.setDraggable(false);
-	map.setZoomable(false);
+	// map.setDraggable(false);
+	// map.setZoomable(false);
 	
+	$(window).resize(onResize);
 	$.get('../json/city.json', onGetCity);
 }
 /* function mapInit() {
